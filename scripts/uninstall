@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+source "$(dirname -- "$0")/common"
+if [[ -d $data_dir/plasma/plasmoids/$pkg_id ]]; then
+    "${package_tool[@]}" --remove "$pkg_id"
+fi
+rm -f -- "$icon_root/scalable/apps/$pkg_id.svg" "$icon_root/256x256/apps/$pkg_id.png"
+if [[ -d $icon_root ]]; then
+    refresh_icon_cache
+fi

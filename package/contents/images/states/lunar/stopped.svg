@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <title>Lunar · Stopped</title>
+    <circle cx="16" cy="16" r="15" fill="#201e37" stroke="#9384ae"/>
+    <circle cx="16" cy="16" r="10" fill="#38344e" stroke="#726681"/>
+    <path d="m5 4 1 2 2 1-2 1-1 2-1-2-2-1 2-1z" fill="#eadab9"/>
+</svg>

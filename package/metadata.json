@@ -1,0 +1,16 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [{ "Name": "Nik" }],
+        "Category": "Utilities",
+        "Description": "Start and stop a command from your panel.",
+        "FormFactors": ["desktop", "horizontal", "vertical"],
+        "Icon": "/images/icon.svg",
+        "Id": "com.github.khlesk.switcher",
+        "License": "MIT",
+        "Name": "Switcher",
+        "Version": "0.1.0",
+        "Website": "https://github.com/khlesk/switcher"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

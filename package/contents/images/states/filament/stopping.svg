@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <title>Filament · Stopping</title>
+    <path d="M12 23c0-4-5-5-5-11a9 9 0 0 1 18 0c0 6-5 7-5 11z" fill="#856247" stroke="#d5b48f" stroke-width="1.5"/>
+    <path d="M12 14l3 3 4-1" fill="none" stroke="#402b38" stroke-width="2" stroke-linecap="round"/>
+    <path d="M11 23h10v4l-3 3h-4l-3-3z" fill="#8b8190"/>
+    <path d="M12 25h8" stroke="#453e50" stroke-width="2"/>
+    <path d="M27 8l2-1" stroke="#ffd777" stroke-width="2" stroke-linecap="round"/>
+</svg>

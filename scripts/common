@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+pkg=$root/package
+pkg_id=$(jq -er '.KPlugin.Id' "$pkg/metadata.json")
+pkg_version=$(jq -er '.KPlugin.Version' "$pkg/metadata.json")
+data_dir=${XDG_DATA_HOME:-$HOME/.local/share}
+icon_root=$data_dir/icons/hicolor
+package_tool=(kpackagetool6 --type Plasma/Applet)
+
+refresh_icon_cache() {
+    if command -v gtk-update-icon-cache >/dev/null; then
+        gtk-update-icon-cache -q -t -f "$icon_root"
+    fi
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <title>Slider · Stopping</title>
+    <rect x="1" y="6" width="30" height="20" rx="10" fill="#25333b" stroke="#879597"/>
+    <rect x="4" y="9" width="24" height="14" rx="7" fill="#101c23"/>
+    <circle cx="18" cy="16" r="7" fill="#d9b282"/>
+    <path transform="translate(18 16)" d="M1-3l-3 3 3 3" fill="none" stroke="#25333b" stroke-width="2" stroke-linecap="round"/>
+</svg>

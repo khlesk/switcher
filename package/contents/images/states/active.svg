@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <title>Active</title>
+    <rect x="1.5" y="1.5" width="29" height="29" rx="7" fill="#0b1a2a" stroke="#6ee7b7" stroke-opacity=".6"/>
+    <g fill="none" stroke="#6ee7b7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m7 20 5 5L25 10"/>
+    </g>
+</svg>

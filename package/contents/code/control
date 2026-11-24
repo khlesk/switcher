@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# One transient service per Plasma applet. Its cgroup owns the entire command.
+action=${1:?missing action}
+[[ ${2:-} =~ ^[0-9]+$ ]] || { echo "Invalid widget ID" >&2; exit 2; }
+unit="plasma-switcher-$2.service"
+
+status() {
+    local properties code=0 key value load= active= type= progress= result= reason= invocation=
+    properties=$(systemctl --user show "$unit" \
+        --property=LoadState,ActiveState,Type,StatusText,Result,ExecMainStatus,InvocationID) || code=$?
+    while IFS='=' read -r key value; do
+        case $key in
+            LoadState) load=$value ;;
+            ActiveState) active=$value ;;
+            Type) type=$value ;;
+            StatusText) progress=$value ;;
+            Result) result=$value ;;
+            ExecMainStatus) reason=$value ;;
+            InvocationID) invocation=$value ;;
+        esac
+    done <<<"$properties"
+
+    if [[ $load == not-found ]]; then
+        echo stopped
+        return
+    fi
+    (( code == 0 )) || return "$code"
+    case $active in
+        active)
+            case $progress in
+                connecting|connected) echo "$progress" ;;
+                *) if [[ $type == notify ]]; then echo connected; else echo running; fi ;;
+            esac ;;
+        activating) echo starting ;;
+        deactivating) echo stopping ;;
+        inactive) echo stopped ;;
+        failed)
+            echo failed
+            printf '%s (status %s)\n' "$result" "$reason"
+            if [[ -n $invocation ]]; then
+                journalctl --user --no-pager -q -o cat -n 3 \
+                    "_SYSTEMD_INVOCATION_ID=$invocation" 2>/dev/null | tail -c 1200 || true
+            fi ;;
+        *) echo "Unexpected service state: $active" >&2; return 1 ;;
+    esac
+}
+
+start() {
+    local command=${3:-}
+    [[ $command =~ [^[:space:]] ]] || { echo "Enter a command in Switcher settings." >&2; return 2; }
+    local -a options=(--user --quiet --no-block --expand-environment=no --service-type=exec
+        "--unit=$unit" "--working-directory=$HOME" "--description=Switcher widget $2"
+        "--setenv=PATH=$PATH" --property=NotifyAccess=all
+        --property=PartOf=graphical-session.target --property=TimeoutStopSec=5s)
+    [[ -z ${SSH_AUTH_SOCK:-} ]] || options+=(--setenv=SSH_AUTH_SOCK)
+
+    # Failed transient units keep their diagnostics until the next attempt.
+    if systemctl --user --quiet is-failed "$unit"; then
+        systemctl --user reset-failed "$unit"
+    fi
+    systemd-run "${options[@]}" -- /bin/bash -c "$command"
+}
+
+case $action in
+    status) status ;;
+    start) start "$@" ;;
+    stop) systemctl --user --no-block stop "$unit" ;;
+    *) echo "Unknown action: $action" >&2; exit 2 ;;
+esac

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+require_commands() {
+    local tool
+    for tool in "$@"; do
+        if ! command -v "$tool" >/dev/null; then
+            echo "Switcher requires $tool. Install it and run the installer again." >&2
+            exit 1
+        fi
+    done
+}
+
+require_commands jq kpackagetool6 systemctl systemd-run mktemp rm cp install dirname
+tmp=$(mktemp -d)
+trap 'rm -rf -- "$tmp"' EXIT
+
+if [[ ${0##*/} != install || ! -f $(dirname -- "$0")/common ]]; then
+    require_commands tar
+    archive_url=https://github.com/khlesk/switcher/archive/refs/heads/master.tar.gz
+    if command -v curl >/dev/null; then
+        curl -fsSL "$archive_url" -o "$tmp/source.tar.gz"
+    elif command -v wget >/dev/null; then
+        wget -O "$tmp/source.tar.gz" "$archive_url"
+    else
+        echo "Install curl or wget to download Switcher from GitHub." >&2
+        exit 1
+    fi
+    tar -xzf "$tmp/source.tar.gz" -C "$tmp"
+    bash "$tmp/switcher-master/scripts/install"
+    exit
+fi
+
+source "$(dirname -- "$0")/common"
+
+# Use the theme icon in the installed package. The .plasmoid archive uses its bundled SVG.
+cp -R -- "$pkg" "$tmp/package"
+jq --arg icon "$pkg_id" '.KPlugin.Icon = $icon' "$pkg/metadata.json" > "$tmp/package/metadata.json"
+
+action=--install
+if [[ -d $data_dir/plasma/plasmoids/$pkg_id ]]; then
+    action=--upgrade
+fi
+"${package_tool[@]}" "$action" "$tmp/package"
+
+install -Dm644 -- "$pkg/contents/images/icon.svg" "$icon_root/scalable/apps/$pkg_id.svg"
+install -Dm644 -- "$root/assets/icon-256.png" "$icon_root/256x256/apps/$pkg_id.png"
+refresh_icon_cache
+echo "Add Switcher from the Plasma widget picker."

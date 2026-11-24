@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+source "$(dirname -- "$0")/common"
+tmp=$(mktemp -d "$root/.package-XXXXXX")
+trap 'rm -rf -- "$tmp"' EXIT
+(cd "$pkg" && zip -qr "$tmp/widget.zip" .)
+archive="$root/$pkg_id-$pkg_version.plasmoid"
+mv -- "$tmp/widget.zip" "$archive"
+echo "$archive"

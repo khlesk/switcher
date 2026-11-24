@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+source "$(dirname -- "$0")/common"
+qmlformat -i "$pkg"/contents/{config,ui,ui/config}/*.qml
+shfmt -w "$root"/scripts/* "$pkg/contents/code/control"

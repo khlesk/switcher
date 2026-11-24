@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+scripts=$(dirname -- "$0")
+"$scripts/uninstall"
+exec "$scripts/install"
